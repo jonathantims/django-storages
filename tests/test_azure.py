@@ -367,8 +367,10 @@ class AzureStorageTest(TestCase):
         file = self.storage.open(name, "r")
         # Access file to trigger the download
         _ = file.read()
-        self.storage._client.download_blob.assert_called_once_with(name, timeout=20)
-        download_stream.readinto.assert_called_once_with(mock.ANY, max_concurrency=1)
+        self.storage._client.download_blob.assert_called_once_with(
+            name, timeout=20, max_concurrency=1
+        )
+        download_stream.readinto.assert_called_once_with(mock.ANY)
 
     def test_storage_open_read_custom_max_conn(self):
         """
@@ -381,7 +383,10 @@ class AzureStorageTest(TestCase):
 
         file = self.storage.open(name, "r")
         _ = file.read()
-        download_stream.readinto.assert_called_once_with(mock.ANY, max_concurrency=5)
+        self.storage._client.download_blob.assert_called_once_with(
+            name, timeout=20, max_concurrency=5
+        )
+        download_stream.readinto.assert_called_once_with(mock.ANY)
 
     def test_storage_exists(self):
         blob_name = "blob"

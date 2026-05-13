@@ -48,11 +48,11 @@ class AzureStorageFile(File):
 
         if "r" in self._mode or "a" in self._mode:
             download_stream = self._storage.client.download_blob(
-                self._path, timeout=self._storage.timeout
+                self._path,
+                timeout=self._storage.timeout,
+                max_concurrency=self._storage.download_max_conn,
             )
-            download_stream.readinto(
-                file, max_concurrency=self._storage.download_max_conn
-            )
+            download_stream.readinto(file)
         if "r" in self._mode:
             file.seek(0)
 
